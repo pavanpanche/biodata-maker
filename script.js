@@ -749,7 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Google Sheet Data Sync ---
-    window.GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzQ7KNug4fUSSmLOtRt4anktXmue4oQHbSzjuihKW0YJfXSjS44qdH0GvQA0N-vCnrPBg/exec";
+    window.GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbw9mu5VRV-Yp9ph_7VgStUK6lKDC_S2biU0FjvFnX86K8oWHryssHO0JtCVsc3ilDu1BQ/exec";
     function getFieldValue(bindKey) {
         const el = document.querySelector(`[data-bind="${bindKey}"]`);
         return el ? el.value.trim() : "";
