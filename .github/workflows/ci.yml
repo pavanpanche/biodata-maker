@@ -1,0 +1,53 @@
+name: CI Validation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    name: HTML & CSS Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Validate HTML files exist
+        run: |
+          echo "🔍 Checking for required files..."
+          test -f index.html && echo "✅ index.html found" || (echo "❌ index.html missing!" && exit 1)
+          test -f style.css && echo "✅ style.css found" || (echo "❌ style.css missing!" && exit 1)
+          test -f script.js && echo "✅ script.js found" || (echo "❌ script.js missing!" && exit 1)
+          echo "🎉 All required files present!"
+
+      - name: Check for broken local references
+        run: |
+          echo "🔗 Checking for broken local file references in HTML..."
+          # Extract local src/href references and verify they exist
+          grep -oP '(?:src|href)="(?!https?://|data:|#|mailto:)([^"]+)"' index.html | \
+            sed 's/.*="\(.*\)"/\1/' | while read -r file; do
+              if [ ! -f "$file" ]; then
+                echo "❌ Referenced file not found: $file"
+                exit 1
+              else
+                echo "✅ $file exists"
+              fi
+            done
+          echo "🎉 All local references are valid!"
+
+      - name: File size check
+        run: |
+          echo "📦 Checking file sizes..."
+          MAX_SIZE_KB=500
+          for file in index.html style.css script.js; do
+            size=$(du -k "$file" | cut -f1)
+            if [ "$size" -gt "$MAX_SIZE_KB" ]; then
+              echo "⚠️  Warning: $file is ${size}KB (threshold: ${MAX_SIZE_KB}KB)"
+            else
+              echo "✅ $file: ${size}KB"
+            fi
+          done

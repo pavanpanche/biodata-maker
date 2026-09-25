@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>Marriage Biodata Generator | विवाह बायोडेटा मेकर</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&family=Rozha+One&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Cropper.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-maroon">
+
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="logo-icon">
+                <img src="assets/jyotiba-phule.jpg" alt="Mahatma Jyotiba Phule and Savitribai Phule">
+            </div>
+            <div class="header-title-box">
+                <h1 class="app-main-title">MARAR MALI SAMAJ</h1>
+                <p class="app-sub-title">✦ विवाह बायोडेटा मेकर ✦</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button id="resetDataBtn" class="btn btn-outline" title="Clear Form" aria-label="Clear Form">
+                <i class="fa-solid fa-eraser"></i> <span class="lbl-full">Clear Form</span><span class="lbl-short">Clear</span>
+            </button>
+            <button id="downloadPngBtn" class="btn btn-secondary" title="Save PNG Image" aria-label="Save PNG Image">
+                <i class="fa-solid fa-file-image"></i> <span class="lbl-full">Save PNG Image</span><span class="lbl-short">Save PNG</span>
+            </button>
+            <button id="shareBtn" class="btn btn-share hidden" title="WhatsApp पर भेजें" aria-label="WhatsApp पर भेजें">
+                <i class="fa-brands fa-whatsapp"></i> <span class="lbl-full">WhatsApp / Share</span><span class="lbl-short">WhatsApp</span>
+            </button>
+            <button id="downloadPdfBtn" class="btn btn-primary" title="Print / Save PDF" aria-label="Print / Save PDF">
+                <i class="fa-solid fa-print"></i> <span class="lbl-full">Print / Save PDF</span><span class="lbl-short">PDF</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile View Toggle (visible only on mobile) -->
+    <div class="mobile-toggle-bar">
+        <button id="mobileEditorBtn" class="mobile-tab active">
+            <i class="fa-solid fa-pen-to-square"></i> जानकारी भरें
+        </button>
+        <button id="mobilePreviewBtn" class="mobile-tab">
+            <i class="fa-solid fa-eye"></i> बायोडेटा देखें
+        </button>
+    </div>
+
+    <!-- Main Container: Editor + Preview -->
+    <main class="main-container">
+
+        <!-- Control Editor Sidebar -->
+        <aside class="editor-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-header-top">
+                    <h2><i class="fa-solid fa-pen-to-square"></i> जानकारी भरें</h2>
+                    <span class="badge"><span class="live-dot"></span> Live</span>
+                </div>
+                <div class="progress-wrap" aria-live="polite">
+                    <div class="progress-label">
+                        <span>बायोडेटा पूरा हुआ</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+                </div>
+            </div>
+
+            <div class="editor-accordion">
+
+                <!-- First-time guide -->
+                <div id="howItWorks" class="how-card">
+                    <div class="how-head">
+                        <strong><i class="fa-solid fa-hands-praying"></i> बायोडेटा बनाना बहुत आसान है</strong>
+                        <button id="howClose" class="how-close" type="button" aria-label="बंद करें">&times;</button>
+                    </div>
+                    <ol class="how-steps">
+                        <li><span class="how-num">1</span><span>नीचे दिए हर भाग को खोलकर अपनी <b>जानकारी भरें</b></span></li>
+                        <li><span class="how-num">2</span><span class="only-mobile">ऊपर <b>बायोडेटा देखें</b> दबाएं और अपनी पसंद का <b>डिज़ाइन व रंग</b> चुनें</span><span class="only-desktop">दाईं ओर हर डिज़ाइन में आपका बायोडेटा दिखेगा — पसंद का <b>डिज़ाइन व रंग</b> चुनें</span></li>
+                        <li><span class="how-num">3</span><span><b>PDF</b> या <b>PNG</b> सेव करें, या सीधे <b>WhatsApp</b> पर भेजें</span></li>
+                    </ol>
+                </div>
+
+                <!-- Personal Details -->
+                <div class="accordion-item active">
+                    <button class="accordion-header">
+                        <span class="acc-icon"><i class="fa-solid fa-user"></i></span>
+                        <span class="acc-text">
+                            <span class="acc-name">Personal Details</span>
+                            <span class="acc-sub">व्यक्तिगत विवरण · नाम, जन्म, शिक्षा</span>
+                        </span>
+                        <span class="acc-status"></span>
+                        <i class="fa-solid fa-chevron-down acc-chevron"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="form-group">
+                            <label class="form-label">Full Name (नाम)</label>
+                            <input type="text" data-bind="name" class="form-control" placeholder="नाम लिखें (e.g. Vijay Sharma)">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Date of Birth (जन्म तिथि)</label>
+                                <input type="text" data-bind="dob" class="form-control" placeholder="e.g. 14 April 1998">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Blood Group (ब्लड ग्रुप)</label>
+                                <input type="text" data-bind="bloodGroup" class="form-control" placeholder="e.g. B+">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Birth Place (जन्म स्थान)</label>
+                            <input type="text" data-bind="birthPlace" class="form-control" placeholder="जन्म स्थान (e.g. Indore, MP)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Height (ऊंचाई)</label>
+                            <input type="text" data-bind="height" class="form-control" placeholder="e.g. 5 फीट 10 इंच">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Sub Caste (जाति)</label>
+                                <input type="text" data-bind="subcaste" class="form-control" placeholder="जाति (e.g. Marar)">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Caste / Category (कास्ट)</label>
+                                <input type="text" data-bind="caste" class="form-control" placeholder="कास्ट (e.g. OBC / General)">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Rashi / Nakshatra (राशि / नक्षत्र)</label>
+                            <input type="text" data-bind="rashi" class="form-control" placeholder="राशि और नक्षत्र (e.g. वृषभ / रोहिणी)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Education & College (शिक्षा एवं कॉलेज - 2 Lines)</label>
+                            <textarea data-bind="education" class="form-control" rows="2" placeholder="Line 1: Degrees / Courses&#10;Line 2: College / University"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Occupation (व्यवसाय)</label>
+                            <input type="text" data-bind="occupation" class="form-control" placeholder="व्यवसाय / जॉब विवरण">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hobbies (शौक)</label>
+                            <input type="text" data-bind="hobbies" class="form-control" placeholder="शौक (e.g. खेलना, पढ़ना, संगीत)">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photo Upload Section -->
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span class="acc-icon"><i class="fa-solid fa-image"></i></span>
+                        <span class="acc-text">
+                            <span class="acc-name">Profile Photo</span>
+                            <span class="acc-sub">फोटो अपलोड और क्रॉप करें</span>
+                        </span>
+                        <span class="acc-status"></span>
+                        <i class="fa-solid fa-chevron-down acc-chevron"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="photo-upload-box">
+                            <img id="editorPhotoPreview" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='200' viewBox='0 0 150 200' fill='none'><rect width='150' height='200' fill='%23f1f5f9'/><circle cx='75' cy='70' r='35' fill='%23cbd5e1'/><path d='M25 170C25 130 45 120 75 120C105 120 125 130 125 170' fill='%23cbd5e1'/><text x='75' y='188' font-family='sans-serif' font-size='11' fill='%2364748b' text-anchor='middle'>Photo Upload</text></svg>" alt="Profile Preview">
+                            <div class="photo-controls">
+                                <label for="photoFileInput" class="btn btn-sm btn-secondary">
+                                    <i class="fa-solid fa-camera"></i> फोटो चुनें
+                                </label>
+                                <input type="file" id="photoFileInput" accept="image/*" class="hidden">
+                                <button id="removePhotoBtn" class="btn btn-sm btn-danger">
+                                    <i class="fa-solid fa-trash"></i> हटाएं
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group mt-2">
+                            <label class="form-label">फोटो दिखाना है? (Show Photo)</label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="showPhotoToggle" checked>
+                                <label for="showPhotoToggle">हाँ, बायोडेटा पर फोटो दिखाएं</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Family Details -->
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span class="acc-icon"><i class="fa-solid fa-users"></i></span>
+                        <span class="acc-text">
+                            <span class="acc-name">Family Details</span>
+                            <span class="acc-sub">पारिवारिक विवरण · माता-पिता, भाई-बहन</span>
+                        </span>
+                        <span class="acc-status"></span>
+                        <i class="fa-solid fa-chevron-down acc-chevron"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="form-group">
+                            <label class="form-label">Father's Name (पिता)</label>
+                            <input type="text" data-bind="fatherName" class="form-control" placeholder="पिता का नाम लिखें">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Father's Occupation (व्यवसाय)</label>
+                            <input type="text" data-bind="fatherOcc" class="form-control" placeholder="पिता का व्यवसाय / सर्विस">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Mother's Name (माता)</label>
+                            <input type="text" data-bind="motherName" class="form-control" placeholder="माता का नाम लिखें">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Mother's Occupation (व्यवसाय)</label>
+                            <input type="text" data-bind="motherOcc" class="form-control" placeholder="गृहणी / व्यवसाय">
+                        </div>
+                        <!-- Dynamic Brother Fields -->
+                        <div class="dynamic-field-section">
+                            <div class="dynamic-field-header">
+                                <label class="form-label">Brothers (भाई)</label>
+                                <button type="button" id="addBrotherBtn" class="btn-add-field" title="Add Brother">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                            <div id="brotherFieldsContainer">
+                                <div class="dynamic-field-item" data-index="1">
+                                    <input type="text" data-bind="brother1" class="form-control" placeholder="भाई 1 - नाम एवं जॉब विवरण">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Sister Fields -->
+                        <div class="dynamic-field-section">
+                            <div class="dynamic-field-header">
+                                <label class="form-label">Sisters (बहन)</label>
+                                <button type="button" id="addSisterBtn" class="btn-add-field" title="Add Sister">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                            <div id="sisterFieldsContainer">
+                                <div class="dynamic-field-item" data-index="1">
+                                    <input type="text" data-bind="sister1" class="form-control" placeholder="बहन 1 - नाम एवं विवरण">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Grandfather's Name (दादा जी)</label>
+                            <input type="text" data-bind="grandFatherName" class="form-control" placeholder="दादा जी का नाम">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Grandmother's Name (दादी जी)</label>
+                            <input type="text" data-bind="grandMotherName" class="form-control" placeholder="दादी जी का नाम">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Details -->
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span class="acc-icon"><i class="fa-solid fa-address-book"></i></span>
+                        <span class="acc-text">
+                            <span class="acc-name">Contact Details</span>
+                            <span class="acc-sub">संपर्क विवरण · फोन और पता</span>
+                        </span>
+                        <span class="acc-status"></span>
+                        <i class="fa-solid fa-chevron-down acc-chevron"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="form-group">
+                            <label class="form-label">Phone Number(s) (संपर्क)</label>
+                            <input type="tel" inputmode="tel" autocomplete="tel" data-bind="phone" class="form-control" placeholder="मोबाइल नंबर (e.g. 98xxxxxx10)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Residential Address (पता)</label>
+                            <textarea data-bind="address" class="form-control" rows="3" placeholder="पूरा पता लिखें"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Title & mantra (colour and frame are chosen on the preview screen) -->
+                <div class="accordion-item" data-optional="true">
+                    <button class="accordion-header">
+                        <span class="acc-icon"><i class="fa-solid fa-heading"></i></span>
+                        <span class="acc-text">
+                            <span class="acc-name">शीर्षक और मंत्र</span>
+                            <span class="acc-sub">चाहें तो ऊपर का मंत्र और टाइटल बदलें</span>
+                        </span>
+                        <span class="acc-status"></span>
+                        <i class="fa-solid fa-chevron-down acc-chevron"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="form-group">
+                            <label class="form-label" for="mantraSelect">सबसे ऊपर का मंत्र (Mantra)</label>
+                            <select id="mantraSelect" class="form-control">
+                                <option value="|| ॐ श्री गणेशाय नमः ||">|| ॐ श्री गणेशाय नमः ||</option>
+                                <option value="|| श्री लक्ष्मीनारायणाय नमः ||">|| श्री लक्ष्मीनारायणाय नमः ||</option>
+                                <option value="|| श्री राधा कृष्णाय नमः ||">|| श्री राधा कृष्णाय नमः ||</option>
+                                <option value="|| ॐ नमः शिवाय ||">|| ॐ नमः शिवाय ||</option>
+                                <option value="|| श्री गणेशाय नमः ||">|| श्री गणेशाय नमः ||</option>
+                                <option value="Custom">Custom Mantra...</option>
+                            </select>
+                        </div>
+                        <div class="form-group hidden" id="customMantraGroup">
+                            <input type="text" id="customMantraInput" class="form-control" placeholder="Mantra likhein...">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="headerTitleInput">मुख्य शीर्षक (Title)</label>
+                            <input type="text" id="headerTitleInput" class="form-control" value="BIODATA">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Next step, trust and help — fills the space below the sections -->
+            <div class="sidebar-footer">
+                <button type="button" id="footerPreviewBtn" class="footer-cta">
+                    <i class="fa-solid fa-eye"></i> बायोडेटा देखें
+                </button>
+                <div class="trust-note">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <div>
+                        <strong>आपकी जानकारी सुरक्षित है</strong>
+                        <span>फोटो और जानकारी किसी सर्वर पर नहीं जाती — सब कुछ सिर्फ आपके फ़ोन / कंप्यूटर में ही रहता है।</span>
+                    </div>
+                </div>
+                <button type="button" id="showHowBtn" class="help-link">
+                    <i class="fa-regular fa-circle-question"></i> बायोडेटा कैसे बनाएं?
+                </button>
+            </div>
+        </aside>
+
+        <!-- Preview Area -->
+        <section class="preview-area">
+            <div class="preview-toolbar">
+                <div class="preview-title">
+                    <i class="fa-solid fa-eye"></i> <span class="preview-title-text">अपना डिज़ाइन और रंग चुनें</span>
+                </div>
+                <div class="preview-actions">
+                    <button id="zoomOutBtn" class="btn-icon" title="Zoom Out" aria-label="Zoom Out"><i class="fa-solid fa-minus"></i></button>
+                    <span id="zoomLevel">100%</span>
+                    <button id="zoomInBtn" class="btn-icon" title="Zoom In" aria-label="Zoom In"><i class="fa-solid fa-plus"></i></button>
+                    <button id="fitScreenBtn" class="btn-icon" title="Fit Screen" aria-label="Fit Screen"><i class="fa-solid fa-expand"></i></button>
+                </div>
+            </div>
+
+            <!-- Guide: tells the user what is still missing -->
+            <div id="previewGuide" class="preview-guide" aria-live="polite">
+                <div class="pg-text">
+                    <i id="pgIcon" class="fa-solid fa-circle-info"></i>
+                    <span id="pgMessage"></span>
+                </div>
+                <button id="pgAction" class="pg-action" type="button"></button>
+            </div>
+
+            <div class="paper-wrapper">
+                <!-- Pick a colour and a frame: every design shows the user's own biodata -->
+                <div class="design-picker">
+                    <section class="picker-block">
+                        <h3 class="picker-title"><span class="picker-step">1</span> रंग चुनें</h3>
+                        <div id="swatchRow" class="swatch-row" role="radiogroup" aria-label="रंग चुनें"></div>
+                    </section>
+                    <section class="picker-block picker-block-plain">
+                        <h3 class="picker-title"><span class="picker-step">2</span> डिज़ाइन चुनें <small>— पसंद आए उस पर टैप करें</small></h3>
+                        <div id="designGallery" class="design-gallery" role="radiogroup" aria-label="डिज़ाइन चुनें"></div>
+                    </section>
+                </div>
+
+                <!-- The selected design: the actual page that is printed / saved / shared -->
+                <div class="sheet-holder">
+                <!-- Printable A4 Biodata Sheet -->
+                <div id="biodataSheet" class="biodata-sheet preset-royal">
+
+                    <!-- Outer Decorative Frame -->
+                    <div class="outer-border">
+                        <div class="inner-border">
+                            
+                            <!-- Corner SVGs Decorative Ornaments -->
+                            <div class="corner-ornament top-left">
+                                <svg viewBox="0 0 100 100" class="ornament-svg">
+                                    <path d="M 10,10 L 90,10 L 90,14 L 14,14 L 14,90 L 10,90 Z" fill="currentColor"/>
+                                    <path d="M 22,22 L 70,22 L 70,24 L 24,24 L 24,70 L 22,70 Z" fill="currentColor"/>
+                                    <circle cx="28" cy="28" r="4" fill="currentColor"/>
+                                    <path d="M 10,10 Q 50,20 10,50 Q 20,50 30,30 Q 50,10 10,10" fill="currentColor" opacity="0.7"/>
+                                </svg>
+                            </div>
+                            <div class="corner-ornament top-right">
+                                <svg viewBox="0 0 100 100" class="ornament-svg">
+                                    <path d="M 10,10 L 90,10 L 90,14 L 14,14 L 14,90 L 10,90 Z" fill="currentColor"/>
+                                    <path d="M 22,22 L 70,22 L 70,24 L 24,24 L 24,70 L 22,70 Z" fill="currentColor"/>
+                                    <circle cx="28" cy="28" r="4" fill="currentColor"/>
+                                    <path d="M 10,10 Q 50,20 10,50 Q 20,50 30,30 Q 50,10 10,10" fill="currentColor" opacity="0.7"/>
+                                </svg>
+                            </div>
+                            <div class="corner-ornament bottom-left">
+                                <svg viewBox="0 0 100 100" class="ornament-svg">
+                                    <path d="M 10,10 L 90,10 L 90,14 L 14,14 L 14,90 L 10,90 Z" fill="currentColor"/>
+                                    <path d="M 22,22 L 70,22 L 70,24 L 24,24 L 24,70 L 22,70 Z" fill="currentColor"/>
+                                    <circle cx="28" cy="28" r="4" fill="currentColor"/>
+                                    <path d="M 10,10 Q 50,20 10,50 Q 20,50 30,30 Q 50,10 10,10" fill="currentColor" opacity="0.7"/>
+                                </svg>
+                            </div>
+                            <div class="corner-ornament bottom-right">
+                                <svg viewBox="0 0 100 100" class="ornament-svg">
+                                    <path d="M 10,10 L 90,10 L 90,14 L 14,14 L 14,90 L 10,90 Z" fill="currentColor"/>
+                                    <path d="M 22,22 L 70,22 L 70,24 L 24,24 L 24,70 L 22,70 Z" fill="currentColor"/>
+                                    <circle cx="28" cy="28" r="4" fill="currentColor"/>
+                                    <path d="M 10,10 Q 50,20 10,50 Q 20,50 30,30 Q 50,10 10,10" fill="currentColor" opacity="0.7"/>
+                                </svg>
+                            </div>
+
+                            <!-- Header Section -->
+                            <div class="sheet-header">
+                                <div id="previewMantra" class="mantra-text">|| ॐ श्री गणेशाय नमः ||</div>
+                                <h1 id="previewMainTitle" class="biodata-main-title">BIODATA</h1>
+                                <div class="decorative-line">
+                                    <span class="line"></span>
+                                    <span class="diamond">◆</span>
+                                    <span class="line"></span>
+                                </div>
+                            </div>
+
+                            <!-- Content Grid -->
+                            <div class="sheet-body">
+
+                                <!-- Photo Container Top Right -->
+                                <div id="sheetPhotoWrapper" class="sheet-photo-wrapper">
+                                    <div class="photo-frame">
+                                        <img id="previewPhoto" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='200' viewBox='0 0 150 200' fill='none'><rect width='150' height='200' fill='%23f1f5f9'/><circle cx='75' cy='70' r='35' fill='%23cbd5e1'/><path d='M25 170C25 130 45 120 75 120C105 120 125 130 125 170' fill='%23cbd5e1'/><text x='75' y='188' font-family='sans-serif' font-size='11' fill='%2364748b' text-anchor='middle'>Photo Upload</text></svg>" alt="Candidate Photo">
+                                    </div>
+                                </div>
+
+                                <!-- Section 1: Personal Details (व्यक्तिगत विवरण) -->
+                                <div class="section-block">
+                                    <div class="section-title">
+                                        <h2>Personal Details / व्यक्तिगत विवरण</h2>
+                                        <div class="title-underline"></div>
+                                    </div>
+                                    <div class="details-grid">
+                                        <div class="detail-row">
+                                            <div class="detail-label">नाम (Name)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value highlight-name" data-view="name">-</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">जन्म तिथि (DOB)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="dob">-</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">ब्लड ग्रुप (Blood Group)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="bloodGroup">-</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">जन्म स्थान (Birth Place)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="birthPlace">-</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">ऊंचाई (Height)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="height">-</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">जाति (Sub Caste)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="subcaste">-</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">कास्ट (Caste/Category)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="caste">-</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">राशि / नक्षत्र (Rashi)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="rashi">-</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">शिक्षा (Education)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="education">-</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">व्यवसाय (Occupation)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="occupation">-</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">शौक (Hobbies)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="hobbies">-</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section 2: Family Details (पारिवारिक विवरण) -->
+                                <div class="section-block">
+                                    <div class="section-title">
+                                        <h2>Family Details / परिवारिक विवरण</h2>
+                                        <div class="title-underline"></div>
+                                    </div>
+                                    <div class="details-grid">
+                                        <div class="detail-row">
+                                            <div class="detail-label">पिता (Father)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="fatherName">-</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">व्यवसाय (Occupation)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="fatherOcc">-</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">माता (Mother)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="motherName">-</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">व्यवसाय (Occupation)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="motherOcc">-</div>
+                                        </div>
+                                        <!-- Dynamic Brother Preview Rows -->
+                                        <div id="previewBrothersContainer" class="details-sub">
+                                            <div class="detail-row" data-preview-brother="1">
+                                                <div class="detail-label">भाई 1 (Brother 1)</div>
+                                                <div class="detail-colon">:</div>
+                                                <div class="detail-value" data-view="brother1">-</div>
+                                            </div>
+                                        </div>
+                                        <!-- Dynamic Sister Preview Rows -->
+                                        <div id="previewSistersContainer" class="details-sub">
+                                            <div class="detail-row" data-preview-sister="1">
+                                                <div class="detail-label">बहन 1 (Sister 1)</div>
+                                                <div class="detail-colon">:</div>
+                                                <div class="detail-value" data-view="sister1">-</div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">दादा जी (Grandfather)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="grandFatherName">-</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">दादी जी (Grandmother)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="grandMotherName">-</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section 3: Contact Details (संपर्क विवरण) -->
+                                <div class="section-block">
+                                    <div class="section-title">
+                                        <h2>Contact Details / संपर्क विवरण</h2>
+                                        <div class="title-underline"></div>
+                                    </div>
+                                    <div class="details-grid">
+                                        <div class="detail-row">
+                                            <div class="detail-label">पता (Address)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="address">-</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">संपर्क (Phone)</div>
+                                            <div class="detail-colon">:</div>
+                                            <div class="detail-value" data-view="phone">-</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Footer Accent -->
+                            <div class="sheet-footer">
+                                <div class="decorative-line">
+                                    <span class="line"></span>
+                                    <span class="diamond">◆</span>
+                                    <span class="line"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Image Cropper Modal -->
+    <div id="cropModal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-crop-simple"></i> फोटो को सही करें (Crop)</h3>
+                <button id="closeCropModalBtn" class="modal-close-btn" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="crop-container">
+                    <img id="imageToCrop" src="" alt="Crop Target">
+                </div>
+                <div class="crop-toolbar">
+                    <button id="rotateLeftBtn" class="btn btn-sm btn-outline" title="Rotate Left"><i class="fa-solid fa-rotate-left"></i></button>
+                    <button id="rotateRightBtn" class="btn btn-sm btn-outline" title="Rotate Right"><i class="fa-solid fa-rotate-right"></i></button>
+                    <button id="zoomInCropBtn" class="btn btn-sm btn-outline" title="Zoom In"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                    <button id="zoomOutCropBtn" class="btn btn-sm btn-outline" title="Zoom Out"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                    <button id="aspectPortraitBtn" class="btn btn-sm btn-secondary active">लंबी (3:4)</button>
+                    <button id="aspectSquareBtn" class="btn btn-sm btn-outline">चौकोर (1:1)</button>
+                    <button id="aspectFreeBtn" class="btn btn-sm btn-outline">अपने हिसाब से</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelCropBtn" class="btn btn-outline">रद्द करें</button>
+                <button id="applyCropBtn" class="btn btn-primary"><i class="fa-solid fa-check"></i> यह फोटो लगाएं</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom sheet: full view of the chosen design, with save / share actions -->
+    <div id="designSheet" class="bsheet hidden">
+        <div class="bsheet-backdrop" data-close></div>
+        <div class="bsheet-panel" role="dialog" aria-modal="true" aria-labelledby="bsheetTitle">
+            <div class="bsheet-grab">
+                <div class="bsheet-handle"></div>
+                <div class="bsheet-head">
+                    <div class="bsheet-titles">
+                        <h3 id="bsheetTitle"></h3>
+                        <span class="bsheet-sub"><i class="fa-solid fa-circle-check"></i> यही डिज़ाइन सेव होगा · बड़ा देखने के लिए टैप करें</span>
+                    </div>
+                    <button type="button" id="bsheetZoom" class="bsheet-icon-btn" aria-label="बड़ा करके देखें"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                    <button type="button" class="bsheet-icon-btn" data-close aria-label="बंद करें"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div id="bsheetBody" class="bsheet-body"></div>
+            <div class="bsheet-actions">
+                <button type="button" class="btn btn-outline" data-close><i class="fa-solid fa-arrow-left"></i> <span>दूसरा डिज़ाइन</span></button>
+                <button type="button" class="btn btn-secondary" data-act="png"><i class="fa-solid fa-file-image"></i> <span>PNG</span></button>
+                <button type="button" class="btn btn-share hidden" data-act="share"><i class="fa-brands fa-whatsapp"></i> <span>WhatsApp</span></button>
+                <button type="button" class="btn btn-primary" data-act="pdf"><i class="fa-solid fa-print"></i> <span>PDF</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF help: explains the phone's print screen before it opens -->
+    <div id="pdfHelpModal" class="modal-backdrop hidden">
+        <div class="modal-card help-card" role="dialog" aria-modal="true" aria-labelledby="pdfHelpTitle">
+            <div class="modal-header">
+                <h3 id="pdfHelpTitle"><i class="fa-solid fa-file-pdf"></i> PDF कैसे सेव करें</h3>
+                <button id="pdfHelpClose" class="modal-close-btn" aria-label="बंद करें">&times;</button>
+            </div>
+            <div class="modal-body">
+                <ol class="how-steps help-steps">
+                    <li><span class="how-num">1</span><span>अगली स्क्रीन पर <b>Print</b> का पेज खुलेगा</span></li>
+                    <li><span class="how-num">2</span><span>ऊपर <b>Printer / Destination</b> में <b>"Save as PDF"</b> चुनें</span></li>
+                    <li><span class="how-num">3</span><span><b>Save</b> या <b>Download</b> बटन दबाएं — PDF आपके <b>Downloads</b> में सेव हो जाएगी</span></li>
+                </ol>
+                <p id="pdfHelpShareTip" class="help-tip hidden"><i class="fa-brands fa-whatsapp"></i> <span>सिर्फ WhatsApp पर भेजना है? तो <b>WhatsApp</b> बटन सबसे आसान है।</span></p>
+                <label class="help-dont"><input type="checkbox" id="pdfHelpDontShow"> यह संदेश दोबारा न दिखाएं</label>
+            </div>
+            <div class="modal-footer">
+                <button id="pdfHelpCancel" class="btn btn-outline">रद्द करें</button>
+                <button id="pdfHelpContinue" class="btn btn-primary"><i class="fa-solid fa-print"></i> समझ गया, आगे बढ़ें</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <!-- html2canvas & Cropper.js JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
