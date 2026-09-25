@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bloodGroup: "",
         birthPlace: "",
         height: "",
-        subcaste: "",
+        subcaste: "Marar",
         caste: "",
         rashi: "",
         education: "",
@@ -877,12 +877,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 8. Clear Form ---
     resetDataBtn.addEventListener('click', () => {
         if (confirm("क्या आप भरी हुई सारी जानकारी और फोटो मिटाना चाहते हैं?\n\nमिटाने के बाद यह वापस नहीं आएगी।")) {
-            // Clear all static inputs
+            // Clear all static inputs (subcaste defaults to Marar)
             document.querySelectorAll('[data-bind]').forEach(input => {
-                input.value = "";
                 const key = input.getAttribute('data-bind');
+                const isSubcaste = key === 'subcaste';
+                input.value = isSubcaste ? "Marar" : "";
                 const targetView = document.querySelector(`[data-view="${key}"]`);
-                if (targetView) targetView.textContent = "-";
+                if (targetView) targetView.textContent = isSubcaste ? "Marar" : "-";
             });
             
             // Reset header controls
