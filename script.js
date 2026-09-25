@@ -748,12 +748,76 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    // --- Google Sheet Data Sync ---
+    function getFieldValue(bindKey) {
+        const el = document.querySelector(`[data-bind="${bindKey}"]`);
+        return el ? el.value.trim() : "";
+    }
+
+    function getSiblingsSummary(type) {
+        const items = Array.from(document.querySelectorAll(`[data-bind^="${type}"]`));
+        return items.map(i => i.value.trim()).filter(v => v !== "").join(" | ");
+    }
+
+    function collectFormData() {
+        return {
+            timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+            name: getFieldValue('name'),
+            dob: getFieldValue('dob'),
+            bloodGroup: getFieldValue('bloodGroup'),
+            birthPlace: getFieldValue('birthPlace'),
+            height: getFieldValue('height'),
+            subcaste: getFieldValue('subcaste') || 'Marar',
+            caste: getFieldValue('caste'),
+            rashi: getFieldValue('rashi'),
+            education: getFieldValue('education'),
+            occupation: getFieldValue('occupation'),
+            hobbies: getFieldValue('hobbies'),
+            fatherName: getFieldValue('fatherName'),
+            fatherOcc: getFieldValue('fatherOcc'),
+            motherName: getFieldValue('motherName'),
+            motherOcc: getFieldValue('motherOcc'),
+            brothers: getSiblingsSummary('brother'),
+            sisters: getSiblingsSummary('sister'),
+            grandFatherName: getFieldValue('grandFatherName'),
+            grandMotherName: getFieldValue('grandMotherName'),
+            phone: getFieldValue('phone'),
+            address: getFieldValue('address')
+        };
+    }
+
+    let lastSyncedKey = "";
+    async function syncDataToSheet() {
+        const data = collectFormData();
+        if (!data.name) return;
+        const currentKey = `${data.name}_${data.phone}`;
+        if (lastSyncedKey === currentKey) return;
+
+        const WEBHOOK_URL = window.GOOGLE_SHEET_WEBHOOK_URL || localStorage.getItem('biodata_sheet_webhook') || "";
+        if (!WEBHOOK_URL) return;
+
+        lastSyncedKey = currentKey;
+
+        try {
+            await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            console.log("✅ Biodata synced to Google Sheet!");
+        } catch (err) {
+            console.error("Google Sheet Sync Error:", err);
+        }
+    }
+
     downloadPngBtn.addEventListener('click', async () => {
         const done = setBusy(downloadPngBtn, 'बन रहा है...');
         try {
             const { blob, fileName } = await generateBiodataPng();
             downloadBlob(blob, fileName);
             showToast("PNG सेव हो गया — फ़ोन के Downloads में देखें");
+            syncDataToSheet();
         } catch (err) {
             console.error("PNG export error:", err);
             showToast("PNG सेव नहीं हो पाया, कृपया दोबारा कोशिश करें", "error");
@@ -854,6 +918,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     downloadPdfBtn.addEventListener('click', () => {
+        syncDataToSheet();
         if (readPref(PDF_HELP_KEY) === '1') {
             window.print();
             return;
