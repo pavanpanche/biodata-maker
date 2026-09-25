@@ -749,6 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Google Sheet Data Sync ---
+    window.GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzQ7KNug4fUSSmLOtRt4anktXmue4oQHbSzjuihKW0YJfXSjS44qdH0GvQA0N-vCnrPBg/exec";
     function getFieldValue(bindKey) {
         const el = document.querySelector(`[data-bind="${bindKey}"]`);
         return el ? el.value.trim() : "";
