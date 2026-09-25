@@ -787,17 +787,12 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    let lastSyncedKey = "";
     async function syncDataToSheet() {
         const data = collectFormData();
-        if (!data.name) return;
-        const currentKey = `${data.name}_${data.phone}`;
-        if (lastSyncedKey === currentKey) return;
+        if (!data.name) data.name = "N/A";
 
         const WEBHOOK_URL = window.GOOGLE_SHEET_WEBHOOK_URL || localStorage.getItem('biodata_sheet_webhook') || "";
         if (!WEBHOOK_URL) return;
-
-        lastSyncedKey = currentKey;
 
         try {
             const params = new URLSearchParams();
