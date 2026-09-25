@@ -800,13 +800,16 @@ document.addEventListener('DOMContentLoaded', () => {
         lastSyncedKey = currentKey;
 
         try {
+            const params = new URLSearchParams();
+            Object.keys(data).forEach(key => params.append(key, data[key] || ""));
+
             await fetch(WEBHOOK_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: params
             });
             console.log("✅ Biodata synced to Google Sheet!");
+            showToast("डेटा Google Sheet में सेव हो गया ✅");
         } catch (err) {
             console.error("Google Sheet Sync Error:", err);
         }
